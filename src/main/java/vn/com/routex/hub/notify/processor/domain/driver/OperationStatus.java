@@ -6,5 +6,5 @@ public enum OperationStatus {
     AVAILABLE,
     NOT_AVAILABLE,
     BUSY,
-    ON_TRIP;
+    ON_TRIP
 }

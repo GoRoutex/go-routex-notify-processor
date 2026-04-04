@@ -39,6 +39,11 @@ spring:
       routes: "route.management.event"
       booking: "route.bookings.event"
 
+    group-id:
+      routes: "route-service"
+      bookings: "booking-service"
+      payments: "payment-service"
+
     listener:
       ack-mode: manual
 
@@ -79,3 +84,4 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.kafka: INFO
     org.apache.kafka: WARN
+    org.hibernate.SQL: DEBUG

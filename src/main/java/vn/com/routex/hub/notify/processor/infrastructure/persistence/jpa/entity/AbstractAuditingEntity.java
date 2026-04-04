@@ -1,5 +1,6 @@
 package vn.com.routex.hub.notify.processor.infrastructure.persistence.jpa.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -24,7 +25,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @SuperBuilder
 public abstract class AbstractAuditingEntity {
-
     @CreatedDate
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
