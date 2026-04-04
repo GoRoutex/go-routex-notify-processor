@@ -41,7 +41,7 @@ node_modules/
 
 # ====== FCM
 
-src/main/resources/fcm/serviceAccountKey.json
+src/main/resources/fcm/firebase-servicekey.json
 
 # ===== Kubernetes temp =====
 *.tgz
