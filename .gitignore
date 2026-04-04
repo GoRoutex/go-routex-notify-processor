@@ -39,8 +39,10 @@ node_modules/
 !application-dev.yml
 !application-prod.yml
 
+# ====== FCM
 
-resources/fcm
+src/main/resources/fcm/serviceAccountKey.json
+
 # ===== Kubernetes temp =====
 *.tgz
 charts/*.tgz
