@@ -39,13 +39,13 @@ public class JsonUtils {
         }
     }
 
-    public Object parseToObject(String message, Class<Object> clazz) throws JsonProcessingException {
-        try {
-            return objectMapper.readValue(message, clazz);
-        } catch (Exception e) {
-            throw new BusinessException(ExceptionUtils.buildResultResponse(TIMEOUT_ERROR, TIMEOUT_ERROR_MESSAGE));
+        public <T> T parseToObject(String message, Class<T> clazz) throws JsonProcessingException {
+            try {
+                return objectMapper.readValue(message, clazz);
+            } catch (Exception e) {
+                throw new BusinessException(ExceptionUtils.buildResultResponse(TIMEOUT_ERROR, TIMEOUT_ERROR_MESSAGE));
+            }
         }
-    }
 
     public <T> T parseToKafkaObject(String message, TypeReference<T> type) {
         try {
