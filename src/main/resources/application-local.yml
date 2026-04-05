@@ -10,9 +10,9 @@ spring:
 
   data:
     redis:
-      host: ${APP_REDIS_HOST:localhost}
-      port: ${APP_REDIS_PORT:6379}
-      password: ${APP_REDIS_PASSWORD:}
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
       lettuce:
         pool:
           max-active: 8
@@ -26,10 +26,19 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:routex}
     password: ${SPRING_DATASOURCE_PASSWORD:routex@2026}
 
+
+  fcm:
+    enabled: true
+    project-id: routex-go
+    service-account-path: src/main/resources/fcm/firebase-servicekey.json
+
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
     show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: true
 
   security:
     user:

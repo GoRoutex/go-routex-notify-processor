@@ -72,6 +72,7 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setCommonErrorHandler(defaultErrorHandler);
+        factory.setAutoStartup(kafkaProperties.getListener().isAutoStartup());
         return factory;
     }
 }

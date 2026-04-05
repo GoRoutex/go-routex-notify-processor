@@ -39,6 +39,10 @@ node_modules/
 !application-dev.yml
 !application-prod.yml
 
+# ====== FCM
+
+src/main/resources/fcm/firebase-servicekey.json
+
 # ===== Kubernetes temp =====
 *.tgz
 charts/*.tgz
