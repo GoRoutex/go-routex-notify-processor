@@ -1,0 +1,34 @@
+package vn.com.routex.hub.notify.processor.domain.activity.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import vn.com.routex.hub.notify.processor.domain.auditing.AbstractAuditingEntity;
+
+import java.time.OffsetDateTime;
+import java.util.Map;
+
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
+public class RecentActivity extends AbstractAuditingEntity {
+    private String id;
+    private String eventType;
+    private String aggregateId;
+    private String eventKey;
+    private OffsetDateTime occurredAt;
+    private String title;
+    private String message;
+    private String actorUserId;
+    private String actorName;
+    private String entityType;
+    private String entityId;
+    private String merchantId;
+    private Map<String, Object> header;
+    private Map<String, Object> payload;
+}

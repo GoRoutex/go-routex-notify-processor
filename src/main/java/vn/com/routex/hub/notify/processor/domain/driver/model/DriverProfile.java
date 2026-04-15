@@ -32,9 +32,6 @@ public class DriverProfile extends AbstractAuditingEntity {
     @Column(name = "USER_ID")
     private String userId;
 
-    @Column(name = "CURRENT_ROUTE_ID")
-    private String currentRouteId;
-
     @Column(name = "EMPLOYEE_CODE")
     private String employeeCode;
 
