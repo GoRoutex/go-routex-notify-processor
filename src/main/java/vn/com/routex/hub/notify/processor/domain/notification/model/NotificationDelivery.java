@@ -1,6 +1,5 @@
 package vn.com.routex.hub.notify.processor.domain.notification.model;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

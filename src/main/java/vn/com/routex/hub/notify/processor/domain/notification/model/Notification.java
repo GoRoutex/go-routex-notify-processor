@@ -1,15 +1,10 @@
 package vn.com.routex.hub.notify.processor.domain.notification.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import vn.com.routex.hub.notify.processor.domain.auditing.AbstractAuditingEntity;
 import vn.com.routex.hub.notify.processor.domain.notification.NotificationStatus;
 

@@ -32,6 +32,7 @@ spring:
     events:
       route-ready-for-sale: "routex.route.ready-for-sale"
       route-assigned: "routex.route.assigned"
+      ticket-issued: "routex.ticket.issued"
       notification-email: "routex.notification.email"
       notification-sms: "routex.notification.sms"
       # Any eventType starting with this prefix will be persisted as a recent activity.
@@ -39,7 +40,7 @@ spring:
 
     topics:
       routes: "route.management.event"
-      booking: "route.bookings.event"
+      booking: "booking.event.management"
       activities: "recent.activities.event"
 
     group-id:

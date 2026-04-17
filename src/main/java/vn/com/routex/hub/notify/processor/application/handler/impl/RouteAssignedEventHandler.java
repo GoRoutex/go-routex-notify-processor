@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import vn.com.go.routex.identity.security.log.SystemLog;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotificationCommand;
 import vn.com.routex.hub.notify.processor.application.handler.OutBoxEventHandler;
-import vn.com.routex.hub.notify.processor.application.services.NotificationPipelineService;
 import vn.com.routex.hub.notify.processor.application.reminder.ReminderScheduler;
 import vn.com.routex.hub.notify.processor.application.services.NotificationIdempotencyService;
+import vn.com.routex.hub.notify.processor.application.services.NotificationPipelineService;
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.DomainEvent;
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.RouteAssignedEvent;
 
