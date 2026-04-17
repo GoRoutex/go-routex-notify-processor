@@ -6,7 +6,6 @@ create table driver_profile
     created_by              varchar(255),
     updated_at              timestamp(6),
     updated_by              varchar(255),
-    current_route_id        varchar(255),
     emergency_contact_name  varchar(255),
     emergency_contact_phone varchar(255),
     employee_code           varchar(255),

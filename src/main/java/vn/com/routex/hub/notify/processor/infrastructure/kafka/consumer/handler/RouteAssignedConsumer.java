@@ -1,16 +1,11 @@
 package vn.com.routex.hub.notify.processor.infrastructure.kafka.consumer.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import vn.com.go.routex.identity.security.log.SystemLog;
-import vn.com.routex.hub.notify.processor.application.handler.OutBoxEventHandler;
 import vn.com.routex.hub.notify.processor.application.handler.impl.OutBoxEventDispatcher;
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.consumer.OutBoxEventConsumer;
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.DomainEvent;

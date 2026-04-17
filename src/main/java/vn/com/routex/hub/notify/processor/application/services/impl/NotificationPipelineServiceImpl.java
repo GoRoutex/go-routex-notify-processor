@@ -16,7 +16,6 @@ import vn.com.routex.hub.notify.processor.domain.notification.model.Notification
 import vn.com.routex.hub.notify.processor.domain.notification.model.NotificationDelivery;
 import vn.com.routex.hub.notify.processor.domain.notification.port.NotificationDeliveryRepositoryPort;
 import vn.com.routex.hub.notify.processor.domain.notification.port.NotificationRepositoryPort;
-import vn.com.routex.hub.notify.processor.infrastructure.persistence.utils.JsonUtils;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -64,7 +63,7 @@ public class NotificationPipelineServiceImpl implements NotificationPipelineServ
 
         notificationRepositoryPort.save(notification);
 
-       // ReadMe: This is for the first FCM Provider for notification delivery
+       // README: This is for the first FCM Provider for notification delivery
 
         List<NotificationDelivery> deliveries = tokens.stream()
                 .map(token -> NotificationDelivery.builder()

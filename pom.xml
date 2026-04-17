@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>vn.com.routex.hub</groupId>
-	<artifactId>notify-processor</artifactId>
+	<artifactId>go-routex-notify-processor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>go-routex-notify-processor</name>
 	<description>Demo project for Spring Boot</description>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>io.github.louisphm091</groupId>
 			<artifactId>auth-security-starter</artifactId>
-			<version>0.0.10</version>
+			<version>0.0.12</version>
 		</dependency>
 
 		<dependency>

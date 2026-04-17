@@ -32,17 +32,22 @@ spring:
     events:
       route-ready-for-sale: "routex.route.ready-for-sale"
       route-assigned: "routex.route.assigned"
+      ticket-issued: "routex.ticket.issued"
       notification-email: "routex.notification.email"
       notification-sms: "routex.notification.sms"
+      # Any eventType starting with this prefix will be persisted as a recent activity.
+      recent-activity-prefix: "routex.recent-activity"
 
     topics:
       routes: "route.management.event"
-      booking: "route.bookings.event"
+      booking: "booking.event.management"
+      activities: "recent.activities.event"
 
     group-id:
       routes: "route-service"
       bookings: "booking-service"
       payments: "payment-service"
+      activities: "notify-processor-recent-activities"
 
     listener:
       ack-mode: manual
@@ -69,7 +74,7 @@ management:
       enabled: true
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8085}
 
 identity:
   jwt:

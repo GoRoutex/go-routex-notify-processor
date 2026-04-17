@@ -15,7 +15,6 @@ import vn.com.routex.hub.notify.processor.infrastructure.persistence.config.Requ
 import vn.com.routex.hub.notify.processor.infrastructure.persistence.security.envelope.RequestEnvelopeExtractor;
 import vn.com.routex.hub.notify.processor.interfaces.models.base.BaseRequest;
 
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 @Component
