@@ -48,7 +48,6 @@ public class ExceptionHandlerAdvice {
     }
 
     private ResponseEntity<BaseResponse<Void>> createErrorResponse(
-            HttpStatus status,
             BaseRequest baseRequest,
             String responseCode,
             String description
@@ -58,7 +57,7 @@ public class ExceptionHandlerAdvice {
                 .description(description)
                 .build();
 
-        return ResponseEntity.status(status)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(buildBaseResponse(baseRequest, result));
     }
 
@@ -103,7 +102,7 @@ public class ExceptionHandlerAdvice {
         String errorMessage = "Invalid Input: " + errorFieldList;
         BaseRequest baseRequest = ApiRequestUtils.getBaseRequestOrDefault(request);
         String responseCode = getValidationResponseCode(ex);
-        return createErrorResponse(HttpStatus.BAD_REQUEST, baseRequest, responseCode, errorMessage);
+        return createErrorResponse(baseRequest, responseCode, errorMessage);
     }
 
     private static String getValidationResponseCode(MethodArgumentNotValidException e) {
@@ -147,7 +146,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<BaseResponse<Void>> handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
         BaseRequest baseRequest = logAndGetBaseRequest(request, e);
-        return createErrorResponse(HttpStatus.BAD_REQUEST, baseRequest, INVALID_INPUT_ERROR, INVALID_INPUT_MESSAGE);
+        return createErrorResponse(baseRequest, INVALID_INPUT_ERROR, INVALID_INPUT_MESSAGE);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
@@ -166,7 +165,7 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity<BaseResponse<Void>> handleNoResourceFoundException(HttpServletRequest request, NoResourceFoundException e) {
         BaseRequest baseRequest = logAndGetBaseRequest(request, e);
         String description = String.format(INVALID_HTTP_REQUEST_RESOURCE_ERROR_MESSAGE, e.getResourcePath());
-        return createErrorResponse(HttpStatus.BAD_REQUEST, baseRequest, INVALID_HTTP_REQUEST_RESOURCE_ERROR, description);
+        return createErrorResponse(baseRequest, INVALID_HTTP_REQUEST_RESOURCE_ERROR, description);
     }
 
 }

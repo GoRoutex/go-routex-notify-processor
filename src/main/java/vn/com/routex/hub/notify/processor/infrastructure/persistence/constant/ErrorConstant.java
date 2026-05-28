@@ -2,25 +2,16 @@ package vn.com.routex.hub.notify.processor.infrastructure.persistence.constant;
 
 public class ErrorConstant {
 
-
     public static final String SYSTEM_ERROR = "6800";
     public static final String SYSTEM_ERROR_MESSAGE = "System Error";
+    public static final String SUCCESS_CODE = "0000";
+    public static final String SUCCESS_MESSAGE = "Success";
     public static final String TIMEOUT_ERROR = "0600";
     public static final String AUTHORIZATION_ERROR = "3200";
     public static final String AUTHORITIES_ERROR = "You are not authorized for this action";
     public static final String TIMEOUT_ERROR_MESSAGE = "Timeout";
     public static final String RECORD_NOT_FOUND = "1407";
-    public static final String ROLE_NOT_FOUND = "Role not found";
-    public static final String AUTHORITIES_NOT_FOUND = "Authorities not found";
-    public static final String ROUTE_NOT_FOUND = "Route with Id %s not found";
-    public static final String SEAT_NOT_FOUND = "Seats not found";
-    public static final String VEHICLE_NOT_FOUND = "Vehicle not found";
-    public static final String ROUTE_SEAT_NOT_FOUND = "Rout Seat with Route Id %s is not exists";
-    public static final String RECORD_NOT_FOUND_MESSAGE = "Record not found";
-    public static final String SUCCESS_CODE = "0000";
-    public static final String SUCCESS_MESSAGE = "Success";
-    public static final String DRIVER_NOT_FOUND_MESSAGE = "Driver Profile not found";
-    public static final String USER_NOT_FOUND_MESSAGE = "User Profile not found";
+    public static final String NOTIFICATION_NOT_FOUND = "Notification not found";
 
     public static final String INVALID_HTTP_REQUEST_RESOURCE_ERROR = "4000";
 

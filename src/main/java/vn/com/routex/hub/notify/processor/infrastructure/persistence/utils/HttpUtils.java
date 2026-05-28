@@ -3,6 +3,7 @@ package vn.com.routex.hub.notify.processor.infrastructure.persistence.utils;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import vn.com.routex.hub.notify.processor.application.command.common.RequestContext;
 import vn.com.routex.hub.notify.processor.infrastructure.persistence.exception.BusinessException;
 import vn.com.routex.hub.notify.processor.interfaces.models.base.BaseRequest;
 import vn.com.routex.hub.notify.processor.interfaces.models.base.BaseResponse;
@@ -11,7 +12,20 @@ import static vn.com.routex.hub.notify.processor.infrastructure.persistence.cons
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ErrorConstant.TIMEOUT_ERROR_MESSAGE;
 
 @UtilityClass
-public class HttpResponseUtil {
+public class HttpUtils {
+
+    public RequestContext toContext(BaseRequest request) {
+        return toContext(request, null);
+    }
+
+    public RequestContext toContext(BaseRequest request, String merchantId) {
+        return RequestContext.builder()
+                .requestId(request.getRequestId())
+                .requestDateTime(request.getRequestDateTime())
+                .channel(request.getChannel())
+                .merchantId(merchantId)
+                .build();
+    }
 
     public <T, R extends BaseResponse<T>> ResponseEntity<R> buildResponse(BaseRequest request, R response) {
         if (response == null) {
@@ -19,8 +33,7 @@ public class HttpResponseUtil {
                     request.getRequestId(),
                     request.getRequestDateTime(),
                     request.getChannel(),
-                    ExceptionUtils.buildResultResponse(
-                            TIMEOUT_ERROR, TIMEOUT_ERROR_MESSAGE)
+                    ExceptionUtils.buildResultResponse(TIMEOUT_ERROR, TIMEOUT_ERROR_MESSAGE)
             );
         }
 
