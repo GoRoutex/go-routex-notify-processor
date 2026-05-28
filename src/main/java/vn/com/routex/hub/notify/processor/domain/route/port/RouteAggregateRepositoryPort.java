@@ -9,6 +9,4 @@ public interface RouteAggregateRepositoryPort {
     Optional<RouteAggregate> findById(String routeId);
 
     void save(RouteAggregate aggregate);
-
-    String generateRouteCode(String originCode, String destinationCode);
 }

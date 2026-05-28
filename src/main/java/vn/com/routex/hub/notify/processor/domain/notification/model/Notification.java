@@ -29,4 +29,7 @@ public class Notification extends AbstractAuditingEntity {
     private Map<String, Object> payload;
     private NotificationStatus status;
     private OffsetDateTime sentAt;
+    private String merchantId;
+    private String userEmail;
+    private boolean read;
 }

@@ -52,7 +52,6 @@ public class RouteAssignedEventHandler implements OutBoxEventHandler {
                 .routeId(assignedEvent.routeId())
                 .driverId(assignedEvent.driverId())
                 .vehicleId(assignedEvent.vehicleId())
-                .driverUserId(assignedEvent.driverUserId())
                 .type("ROUTE_ASSIGNED")
                 .titleVariables(Map.of(
                         "originName", assignedEvent.originName(),

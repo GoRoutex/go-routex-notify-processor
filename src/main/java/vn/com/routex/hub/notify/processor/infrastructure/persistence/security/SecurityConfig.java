@@ -40,7 +40,7 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtAuthenticationFilter,
             CustomAccessDeniedHandler accessDeniedHandler,
             CustomAuthenticationEntryPoint authenticationEntryPoint
-    ) throws Exception {
+    ) {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(corsConfigurerCustomizer())
@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/actuator/**",
                                 "/error",
                                 "/swagger-ui/**",
+                                "/api/v1/notify/stream",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
                         ).permitAll()

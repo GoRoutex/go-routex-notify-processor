@@ -30,15 +30,12 @@ spring:
   fcm:
     enabled: true
     project-id: routex-go
-    service-account-path: src/main/resources/fcm/firebase-servicekey.json
+    service-account-path: /Volumes/Dev/Workspace/GoRoutex/go-routex-notify-processor/src/main/resources/fcm/firebase-servicekey.json
 
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: ${SPRING_JPA_SHOW_SQL:false}
-    properties:
-      hibernate:
-        format_sql: true
 
   security:
     user:

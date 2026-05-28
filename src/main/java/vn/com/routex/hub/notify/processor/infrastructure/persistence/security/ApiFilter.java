@@ -28,6 +28,11 @@ public class ApiFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
+        if(shouldByPass(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (requestURI.startsWith("/actuator/") || requestURI.contains("/location-service/")|| requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/v3/api-docs")) {
             filterChain.doFilter(request, response);
             return;
@@ -62,5 +67,12 @@ public class ApiFilter extends OncePerRequestFilter {
             log.info("{}", responseMessage);
             contentCachingResponseWrapper.copyBodyToResponse();
         }
+    }
+
+    private boolean shouldByPass(String requestURI) {
+        return requestURI.startsWith("/actuator/") ||
+                requestURI.contains("/notify/stream") ||
+                requestURI.startsWith("/swagger-ui") ||
+                requestURI.startsWith("/v3/api-docs");
     }
 }

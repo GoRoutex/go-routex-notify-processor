@@ -27,6 +27,13 @@ public class NotificationPersistenceMapper {
                 .payload(notificationEntity.getPayload())
                 .status(notificationEntity.getStatus())
                 .sentAt(notificationEntity.getSentAt())
+                .merchantId(notificationEntity.getMerchantId())
+                .userEmail(notificationEntity.getUserEmail())
+                .read(notificationEntity.isRead())
+                .createdAt(notificationEntity.getCreatedAt())
+                .createdBy(notificationEntity.getCreatedBy())
+                .updatedAt(notificationEntity.getUpdatedAt())
+                .updatedBy(notificationEntity.getUpdatedBy())
                 .build();
     }
 
@@ -42,6 +49,7 @@ public class NotificationPersistenceMapper {
                 .driverId(notification.getDriverId())
                 .channel(notification.getChannel())
                 .title(notification.getTitle())
+                .type(notification.getType())
                 .body(notification.getBody())
                 .deepLink(notification.getDeepLink())
                 .payload(notification.getPayload())
@@ -51,6 +59,9 @@ public class NotificationPersistenceMapper {
                 .createdBy(notification.getCreatedBy())
                 .updatedAt(notification.getUpdatedAt())
                 .updatedBy(notification.getUpdatedBy())
+                .merchantId(notification.getMerchantId())
+                .userEmail(notification.getUserEmail())
+                .read(notification.isRead())
                 .build();
     }
 }

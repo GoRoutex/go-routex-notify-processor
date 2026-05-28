@@ -22,8 +22,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class RouteSeat extends AbstractAuditingEntity {
-
-    private Integer id;
+    private String id;
     private String routeId;
     private String seatNo;
     private SeatStatus status;

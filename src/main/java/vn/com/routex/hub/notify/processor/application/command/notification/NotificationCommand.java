@@ -9,7 +9,6 @@ import java.util.Map;
 public record NotificationCommand(
     String routeId,
     String driverId,
-    String driverUserId,
     String vehicleId,
     String type,
     String templateCode,

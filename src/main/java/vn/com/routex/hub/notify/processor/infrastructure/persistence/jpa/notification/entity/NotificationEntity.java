@@ -65,4 +65,13 @@ public class NotificationEntity extends AbstractAuditingEntity {
 
     @Column(name = "SENT_AT")
     private OffsetDateTime sentAt;
+
+    @Column(name = "MERCHANT_ID")
+    private String merchantId;
+
+    @Column(name = "USER_EMAIL")
+    private String userEmail;
+
+    @Column(name = "IS_READ", nullable = false)
+    private boolean read = false;
 }

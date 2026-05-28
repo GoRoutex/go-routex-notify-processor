@@ -19,40 +19,38 @@ import java.util.List;
 @SuperBuilder(toBuilder = true)
 public class RouteAggregate extends AbstractAuditingEntity {
     private String id;
-    private String routeCode;
     private String creator;
-    private String pickupBranch;
-    private String origin;
-    private String destination;
-    private OffsetDateTime plannedStartTime;
-    private OffsetDateTime plannedEndTime;
-    private OffsetDateTime actualStartTime;
-    private OffsetDateTime actualEndTime;
+    private String merchantId;
+    private String originName;
+    private String destinationName;
+    private String originCode;
+    private String destinationCode;
+    private Long duration;
     private RouteStatus status;
     private List<RouteStopPlan> stopPlans;
 
     public static RouteAggregate plan(
             String id,
-            String routeCode,
             String creator,
-            String pickupBranch,
-            String origin,
-            String destination,
-            OffsetDateTime plannedStartTime,
-            OffsetDateTime plannedEndTime,
+            String merchantId,
+            String originCode,
+            String destinationCode,
+            String originName,
+            String destinationName,
+            Long duration,
             OffsetDateTime createdAt,
             List<RouteStopPlan> stopPlans
     ) {
         return RouteAggregate.builder()
                 .id(id)
-                .routeCode(routeCode)
                 .creator(creator)
-                .pickupBranch(pickupBranch)
-                .origin(origin)
-                .destination(destination)
-                .plannedStartTime(plannedStartTime)
-                .plannedEndTime(plannedEndTime)
-                .status(RouteStatus.PLANNED)
+                .merchantId(merchantId)
+                .originCode(originCode)
+                .destinationCode(destinationCode)
+                .originName(originName)
+                .destinationName(destinationName)
+                .duration(duration)
+                .status(RouteStatus.ACTIVE)
                 .createdAt(createdAt)
                 .createdBy(creator)
                 .stopPlans(stopPlans == null ? new ArrayList<>() : new ArrayList<>(stopPlans))
@@ -60,7 +58,7 @@ public class RouteAggregate extends AbstractAuditingEntity {
     }
 
     public void cancel(String actor, OffsetDateTime updatedAt) {
-        this.status = RouteStatus.CANCELED;
+        this.status = RouteStatus.INACTIVE;
         this.setCreatedBy(actor);
         this.setUpdatedAt(updatedAt);
     }
