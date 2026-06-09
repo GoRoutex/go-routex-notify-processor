@@ -84,6 +84,24 @@ identity:
     authority-claim-name: ${JWT_CLAIM_NAME:roles}
     authority-prefix: ${JWT_AUTH_PREFIX:ROLE_}
 
+notification:
+  email:
+    provider: sendgrid
+    sendgrid:
+      baseUrl: ${BASE_URL:http://localhost:5173/}
+      api-key: ${SENDGRID_API_KEY}
+      from-email: ${SENDGRID_FROM_EMAIL:simon@routex-go.com}
+      from-name: ${SENDGRID_FROM_NAME:Go-Routex}
+      verify-subject: ${SENDGRID_VERIFY_SUBJECT:Registration Form - Verify your Email}
+      ticket-subject: ${SENDGRID_TICKET_SUBJECT:GoRoutex - Booking Confirmation Ticket}
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
 logging:
   level:
     org.springframework.security: DEBUG

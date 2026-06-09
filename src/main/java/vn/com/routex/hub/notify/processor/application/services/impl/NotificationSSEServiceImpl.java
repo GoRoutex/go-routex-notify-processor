@@ -3,13 +3,18 @@ package vn.com.routex.hub.notify.processor.application.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import vn.com.go.routex.identity.security.log.SystemLog;
 import vn.com.routex.hub.notify.processor.application.command.notification.GetNotificationHistoryQuery;
 import vn.com.routex.hub.notify.processor.application.command.notification.GetNotificationHistoryResult;
 import vn.com.routex.hub.notify.processor.application.command.notification.GetNotificationHistoryResult.NotificationHistoryItem;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllDeletedCommand;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllDeletedResult;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllReadMarkedCommand;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllReadMarkedResult;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyDeletedCommand;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyDeletedResult;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyReadMarkedCommand;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyReadMarkedResult;
 import vn.com.routex.hub.notify.processor.application.command.sse.SSEStreamInformation;
@@ -80,6 +85,7 @@ public class NotificationSSEServiceImpl implements NotificationSSEService {
     }
 
     @Override
+    @Transactional
     public NotifyReadMarkedResult markAsRead(NotifyReadMarkedCommand command) {
         sLog.info("[NOTIFY-READ] Marking notification={} as read", command.id());
         Notification notification = notificationRepositoryPort.findById(command.id())
@@ -95,9 +101,10 @@ public class NotificationSSEServiceImpl implements NotificationSSEService {
     }
 
     @Override
+    @Transactional
     public NotifyAllReadMarkedResult markAllAsRead(NotifyAllReadMarkedCommand command) {
         sLog.info("[NOTIFY-READ-ALL] Marking all notifications for email={}, merchantId={} as read", command.email(), command.merchantId());
-        List<Notification> unreadList = notificationRepositoryPort.findUnreadNotification(command.email(), command.merchantId());
+        List<Notification> unreadList = notificationRepositoryPort.findUnreadNotification(command.merchantId(), command.email());
 
         unreadList.forEach(notification -> {
             notification.setRead(true);
@@ -112,6 +119,32 @@ public class NotificationSSEServiceImpl implements NotificationSSEService {
                                 .read(not.isRead())
                                 .build())
                         .toList())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public NotifyDeletedResult delete(NotifyDeletedCommand command) {
+        sLog.info("[NOTIFY-DELETE] Deleting notification={}", command.id());
+        Notification notification = notificationRepositoryPort.findById(command.id())
+                .orElseThrow(() -> new BusinessException(command.context().requestId(), command.context().requestDateTime(), command.context().channel(),
+                        ExceptionUtils.buildResultResponse(RECORD_NOT_FOUND, NOTIFICATION_NOT_FOUND)));
+
+        notificationRepositoryPort.deleteById(notification.getId());
+        return NotifyDeletedResult.builder()
+                .id(notification.getId())
+                .deleted(true)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public NotifyAllDeletedResult deleteAll(NotifyAllDeletedCommand command) {
+        sLog.info("[NOTIFY-DELETE-ALL] Deleting all notifications for email={}, merchantId={}", command.email(), command.merchantId());
+        long deletedCount = notificationRepositoryPort.deleteByMerchantIdAndUserEmail(command.merchantId(), command.email());
+
+        return NotifyAllDeletedResult.builder()
+                .deletedCount(deletedCount)
                 .build();
     }
 

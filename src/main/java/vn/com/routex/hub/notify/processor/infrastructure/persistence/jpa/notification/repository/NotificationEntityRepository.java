@@ -25,4 +25,6 @@ public interface NotificationEntityRepository extends JpaRepository<Notification
     List<NotificationEntity> findUnreadNotification(
             @Param("merchantId") String merchantId,
             @Param("userEmail") String userEmail);
+
+    long deleteByMerchantIdAndUserEmail(String merchantId, String userEmail);
 }

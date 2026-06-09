@@ -27,11 +27,6 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:routex@2026}
 
 
-  fcm:
-    enabled: true
-    project-id: routex-go
-    service-account-path: /Volumes/Dev/Workspace/GoRoutex/go-routex-notify-processor/src/main/resources/fcm/firebase-servicekey.json
-
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}

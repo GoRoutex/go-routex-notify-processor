@@ -57,4 +57,14 @@ public class NotificationRepositoryAdapter implements NotificationRepositoryPort
                 .map(notificationPersistenceMapper::toEntity)
                 .toList());
     }
+
+    @Override
+    public void deleteById(String id) {
+        notificationEntityRepository.deleteById(id);
+    }
+
+    @Override
+    public long deleteByMerchantIdAndUserEmail(String merchantId, String userEmail) {
+        return notificationEntityRepository.deleteByMerchantIdAndUserEmail(merchantId, userEmail);
+    }
 }

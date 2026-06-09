@@ -1,20 +1,25 @@
 package vn.com.routex.hub.notify.processor.interfaces.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import vn.com.routex.hub.notify.processor.application.command.notification.GetNotificationHistoryQuery;
 import vn.com.routex.hub.notify.processor.application.command.notification.GetNotificationHistoryResult;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllDeletedCommand;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllDeletedResult;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllReadMarkedCommand;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyAllReadMarkedResult;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyDeletedCommand;
+import vn.com.routex.hub.notify.processor.application.command.notification.NotifyDeletedResult;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyReadMarkedCommand;
 import vn.com.routex.hub.notify.processor.application.command.notification.NotifyReadMarkedResult;
 import vn.com.routex.hub.notify.processor.application.command.sse.SSEStreamInformation;
@@ -23,7 +28,11 @@ import vn.com.routex.hub.notify.processor.infrastructure.persistence.utils.ApiRe
 import vn.com.routex.hub.notify.processor.infrastructure.persistence.utils.HttpUtils;
 import vn.com.routex.hub.notify.processor.interfaces.models.base.BaseRequest;
 import vn.com.routex.hub.notify.processor.interfaces.models.notification.GetNotificationHistoryResponse;
+import vn.com.routex.hub.notify.processor.interfaces.models.notification.NotifyAllDeleteRequest;
+import vn.com.routex.hub.notify.processor.interfaces.models.notification.NotifyAllDeletedResponse;
 import vn.com.routex.hub.notify.processor.interfaces.models.notification.NotifyAllReadMarkedResponse;
+import vn.com.routex.hub.notify.processor.interfaces.models.notification.NotifyDeleteRequest;
+import vn.com.routex.hub.notify.processor.interfaces.models.notification.NotifyDeletedResponse;
 import vn.com.routex.hub.notify.processor.interfaces.models.notification.NotifyReadMarkedResponse;
 import vn.com.routex.hub.notify.processor.interfaces.models.result.ApiResult;
 
@@ -33,6 +42,8 @@ import java.util.stream.Collectors;
 
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.API_PATH;
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.API_VERSION;
+import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.DELETE_ALL_PATH;
+import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.DELETE_PATH;
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.NOTIFICATION_PATH;
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.READ_ALL_PATH;
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ApiConstant.READ_PATH;
@@ -102,6 +113,7 @@ public class SseNotificationController {
         BaseRequest request = ApiRequestUtils.getBaseRequestOrDefault(servletRequest);
 
         NotifyReadMarkedResult result = notificationSSEService.markAsRead(NotifyReadMarkedCommand.builder()
+                .context(HttpUtils.toContext(request))
                 .id(id)
                 .build());
 
@@ -142,6 +154,56 @@ public class SseNotificationController {
                                 .read(item.read())
                                 .build())
                         .collect(Collectors.toList()))
+                .build();
+
+        return HttpUtils.buildResponse(request, response);
+    }
+
+    @PostMapping(DELETE_PATH)
+    public ResponseEntity<NotifyDeletedResponse> deleteNotification(
+            @Valid @RequestBody NotifyDeleteRequest requestBody,
+            HttpServletRequest servletRequest) {
+
+        BaseRequest request = ApiRequestUtils.getBaseRequestOrDefault(servletRequest);
+        NotifyDeletedResult result = notificationSSEService.delete(NotifyDeletedCommand.builder()
+                .context(HttpUtils.toContext(request))
+                .id(requestBody.getId())
+                .build());
+
+        NotifyDeletedResponse response = NotifyDeletedResponse.builder()
+                .requestId(request.getRequestId())
+                .requestDateTime(request.getRequestDateTime())
+                .channel(request.getChannel())
+                .result(ApiResult.buildSuccess())
+                .data(NotifyDeletedResponse.NotifyDeletedResponseData.builder()
+                        .id(result.id())
+                        .deleted(result.deleted())
+                        .build())
+                .build();
+
+        return HttpUtils.buildResponse(request, response);
+    }
+
+    @PostMapping(DELETE_ALL_PATH)
+    public ResponseEntity<NotifyAllDeletedResponse> deleteAllNotifications(
+            @Valid @RequestBody NotifyAllDeleteRequest requestBody,
+            HttpServletRequest servletRequest) {
+
+        BaseRequest request = ApiRequestUtils.getBaseRequestOrDefault(servletRequest);
+        NotifyAllDeletedResult result = notificationSSEService.deleteAll(NotifyAllDeletedCommand.builder()
+                .context(HttpUtils.toContext(request))
+                .merchantId(requestBody.getMerchantId())
+                .email(requestBody.getEmail())
+                .build());
+
+        NotifyAllDeletedResponse response = NotifyAllDeletedResponse.builder()
+                .requestId(request.getRequestId())
+                .requestDateTime(request.getRequestDateTime())
+                .channel(request.getChannel())
+                .result(ApiResult.buildSuccess())
+                .data(NotifyAllDeletedResponse.NotifyAllDeletedResponseData.builder()
+                        .deletedCount(result.deletedCount())
+                        .build())
                 .build();
 
         return HttpUtils.buildResponse(request, response);
