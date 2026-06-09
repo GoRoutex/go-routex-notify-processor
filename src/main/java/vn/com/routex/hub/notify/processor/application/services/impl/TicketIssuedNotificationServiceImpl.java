@@ -3,6 +3,7 @@ package vn.com.routex.hub.notify.processor.application.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.go.routex.identity.security.log.SystemLog;
+import vn.com.routex.hub.notify.processor.application.reminder.ReminderScheduler;
 import vn.com.routex.hub.notify.processor.application.services.NotificationIdempotencyService;
 import vn.com.routex.hub.notify.processor.application.services.TicketIssuedNotificationService;
 import vn.com.routex.hub.notify.processor.domain.notification.NotificationStatus;
@@ -14,6 +15,7 @@ import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.TicketIssue
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.model.KafkaEventMessage;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,6 +33,7 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
     private final NotificationIdempotencyService notificationIdempotencyService;
     private final NotificationRepositoryPort notificationRepositoryPort;
     private final NotificationDeliveryRepositoryPort notificationDeliveryRepositoryPort;
+    private final ReminderScheduler reminderScheduler;
 
     private final SystemLog sLog = SystemLog.getLogger(this.getClass());
 
@@ -46,7 +49,7 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
         OffsetDateTime now = OffsetDateTime.now();
         Notification notification = Notification.builder()
                 .id(UUID.randomUUID().toString())
-                .routeId(data.routeId())
+                .routeId(resolveTripId(data))
                 .dedupeKey(idemKey)
                 .driverId(data.customerId())
                 .channel(IN_APP_PROVIDER)
@@ -57,6 +60,8 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
                 .payload(buildPayload(data))
                 .status(NotificationStatus.SENT)
                 .sentAt(now)
+                .merchantId(data.merchantId())
+                .userEmail(data.customerEmail())
                 .createdAt(now)
                 .createdBy("notify-processor")
                 .updatedAt(now)
@@ -78,6 +83,7 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
         notificationDeliveryRepositoryPort.saveAll(deliveries);
 
         sLog.info("[TICKET-ISSUED] In-app notification sent for bookingId={} customerId={}", data.bookingId(), data.customerId());
+        reminderScheduler.scheduleTicketDepartureReminder(event);
         if (hasText(data.customerEmail())) {
             sLog.info("[TICKET-ISSUED] Email notification sent to {}", data.customerEmail());
         }
@@ -98,15 +104,17 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
     }
 
     private Map<String, Object> buildPayload(TicketIssuedEvent data) {
-        return Map.of(
-                "bookingId", data.bookingId(),
-                "bookingCode", data.bookingCode(),
-                "customerId", data.customerId(),
-                "routeId", data.routeId(),
-                "currency", data.currency(),
-                "totalAmount", data.totalAmount(),
-                "tickets", data.tickets()
-        );
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("bookingId", data.bookingId());
+        payload.put("bookingCode", data.bookingCode());
+        payload.put("customerId", data.customerId());
+        payload.put("merchantId", data.merchantId());
+        payload.put("tripId", resolveTripId(data));
+        payload.put("departureTime", data.departureTime());
+        payload.put("currency", data.currency());
+        payload.put("totalAmount", data.totalAmount());
+        payload.put("tickets", data.tickets());
+        return payload;
     }
 
     private NotificationDelivery buildDelivery(String notificationId,
@@ -132,5 +140,9 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private String resolveTripId(TicketIssuedEvent data) {
+        return hasText(data.tripId()) ? data.tripId() : data.routeId();
     }
 }

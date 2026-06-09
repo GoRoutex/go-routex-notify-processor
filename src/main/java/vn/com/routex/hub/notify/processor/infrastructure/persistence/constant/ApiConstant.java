@@ -7,5 +7,6 @@ public class ApiConstant {
     public static final String STREAM_PATH = "/stream";
     public static final String READ_PATH = "/read";
     public static final String READ_ALL_PATH = "/read-all";
+    public static final String DELETE_PATH = "/delete";
+    public static final String DELETE_ALL_PATH = "/delete-all";
 }
-
