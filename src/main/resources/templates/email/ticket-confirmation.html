@@ -28,45 +28,47 @@
             
             <div class="ticket-box">
                 <div class="info-row">
-                    <span class="label">Mã vé: </span>
-                    <span class="value important" th:text="${ticketCode}"></span>
+                    <span class="label">Mã đặt chỗ: </span>
+                    <span class="value important" th:text="${bookingCode}"></span>
                 </div>
                 <div class="info-row">
-                    <span class="label">Tuyến đường: </span>
-                    <span class="value" th:text="${routeName}"></span>
+                    <span class="label">Số lượng vé: </span>
+                    <span class="value" th:text="${ticketCount}"></span>
                 </div>
                 <div class="info-row">
-                    <span class="label">Thời gian xuất bến: </span>
+                    <span class="label">Thời gian khởi hành: </span>
                     <span class="value" th:text="${departureTime}"></span>
                 </div>
                 <div class="info-row">
-                    <span class="label">Số ghế: </span>
-                    <span class="value" th:text="${seatNumber}"></span>
+                    <span class="label">Ghế: </span>
+                    <span class="value" th:text="${seatNumbers}"></span>
                 </div>
-                <div class="info-row">
-                    <span class="label">Điểm đón: </span>
-                    <span class="value" th:text="${startPoint}"></span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Điểm trả: </span>
-                    <span class="value" th:text="${endPoint}"></span>
-                </div>
-                <hr>
-                <div class="info-row">
+                <div class="info-row" th:if="${driverName != null and !#strings.isEmpty(driverName)}">
                     <span class="label">Tài xế: </span>
                     <span class="value" th:text="${driverName}"></span>
                 </div>
-                <div class="info-row">
-                    <span class="label">SĐT Tài xế: </span>
+                <div class="info-row" th:if="${driverPhone != null and !#strings.isEmpty(driverPhone)}">
+                    <span class="label">SĐT tài xế: </span>
                     <span class="value" th:text="${driverPhone}"></span>
                 </div>
-                <div class="info-row">
+                <div class="info-row" th:if="${vehiclePlate != null and !#strings.isEmpty(vehiclePlate)}">
                     <span class="label">Biển số xe: </span>
                     <span class="value" th:text="${vehiclePlate}"></span>
                 </div>
-                <div class="info-row">
-                    <span class="label">Loại xe: </span>
-                    <span class="value" th:text="${vehicleType}"></span>
+                <hr>
+                <div th:each="ticket : ${tickets}" style="margin-bottom: 12px;">
+                    <div class="info-row">
+                        <span class="label">Mã vé: </span>
+                        <span class="value important" th:text="${ticket.ticketCode}"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Số ghế: </span>
+                        <span class="value" th:text="${ticket.seatNumber}"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Giá vé: </span>
+                        <span class="value" th:text="${ticket.price}"></span>
+                    </div>
                 </div>
             </div>
             

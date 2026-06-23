@@ -50,8 +50,7 @@ public class TicketIssuedConsumer {
         if (isBlank(event.eventId())
                 || isBlank(event.eventName())
                 || isBlank(event.aggregateId())
-                || isBlank(data.bookingId())
-                || isBlank(data.customerId())) {
+                || isBlank(data.bookingId())) {
             throw new BusinessException(event.requestId(), event.requestDateTime(), event.channel(),
                     ExceptionUtils.buildResultResponse(INVALID_INPUT_ERROR, String.format(INVALID_EVENT_MESSAGE, event.eventName())));
         }

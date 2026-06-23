@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:kafka:9092}
@@ -9,7 +9,7 @@ spring:
       group-id: ${KAFKA_CONSUMER_GROUP_ID:management-service}
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgresql.postgresql.svc.cluster.local:5432/routex}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/routex}
     username: ${SPRING_DATASOURCE_USERNAME:routex}
     password: ${SPRING_DATASOURCE_PASSWORD}
 

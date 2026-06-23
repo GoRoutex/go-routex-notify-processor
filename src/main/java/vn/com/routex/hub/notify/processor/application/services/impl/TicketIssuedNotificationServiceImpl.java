@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vn.com.go.routex.identity.security.log.SystemLog;
 import vn.com.routex.hub.notify.processor.application.reminder.ReminderScheduler;
+import vn.com.routex.hub.notify.processor.application.services.EmailService;
 import vn.com.routex.hub.notify.processor.application.services.NotificationIdempotencyService;
 import vn.com.routex.hub.notify.processor.application.services.TicketIssuedNotificationService;
 import vn.com.routex.hub.notify.processor.domain.notification.NotificationStatus;
@@ -15,6 +16,7 @@ import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.TicketIssue
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.model.KafkaEventMessage;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,7 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
     private final NotificationRepositoryPort notificationRepositoryPort;
     private final NotificationDeliveryRepositoryPort notificationDeliveryRepositoryPort;
     private final ReminderScheduler reminderScheduler;
+    private final EmailService emailService;
 
     private final SystemLog sLog = SystemLog.getLogger(this.getClass());
 
@@ -85,7 +88,7 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
         sLog.info("[TICKET-ISSUED] In-app notification sent for bookingId={} customerId={}", data.bookingId(), data.customerId());
         reminderScheduler.scheduleTicketDepartureReminder(event);
         if (hasText(data.customerEmail())) {
-            sLog.info("[TICKET-ISSUED] Email notification sent to {}", data.customerEmail());
+            sendTicketEmail(data);
         }
         if (hasText(data.customerPhone())) {
             sLog.info("[TICKET-ISSUED] SMS notification sent to {}", data.customerPhone());
@@ -101,6 +104,32 @@ public class TicketIssuedNotificationServiceImpl implements TicketIssuedNotifica
                 .map(TicketIssuedEvent.TicketIssuedItem::seatNumber)
                 .collect(Collectors.joining(", "));
         return "Dat cho " + data.bookingCode() + " da thanh toan thanh cong. Ghe: " + seats;
+    }
+
+    private void sendTicketEmail(TicketIssuedEvent data) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("customerName", data.customerName());
+        variables.put("bookingCode", data.bookingCode());
+        variables.put("departureTime", data.departureTime() == null ? "" : data.departureTime().format(DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")));
+        variables.put("totalAmount", data.totalAmount());
+        variables.put("currency", data.currency());
+        variables.put("driverName", data.driverName());
+        variables.put("driverPhone", data.driverPhone());
+        variables.put("vehiclePlate", data.vehiclePlate());
+        variables.put("ticketCount", data.tickets() == null ? 0 : data.tickets().size());
+        variables.put("seatNumbers", data.tickets() == null ? "" : data.tickets().stream()
+                .map(TicketIssuedEvent.TicketIssuedItem::seatNumber)
+                .collect(Collectors.joining(", ")));
+        variables.put("tickets", data.tickets() == null ? List.of() : data.tickets());
+
+        emailService.sendEmail(
+                data.customerEmail(),
+                "Xac nhan dat ve thanh cong - " + data.bookingCode(),
+                "email/ticket-confirmation",
+                variables
+        );
+        sLog.info("[TICKET-ISSUED] Email notification sent to {} for bookingId={}",
+                data.customerEmail(), data.bookingId());
     }
 
     private Map<String, Object> buildPayload(TicketIssuedEvent data) {

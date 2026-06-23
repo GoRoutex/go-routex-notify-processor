@@ -6,10 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "notification.email.sendgrid")
-public class SendGridMailProperties {
-    private String baseUrl;
-    private String apiKey;
+@ConfigurationProperties(prefix = "notification.email.brevo")
+public class BrevoMailProperties {
     private String fromEmail;
     private String fromName;
     private String verifySubject;
