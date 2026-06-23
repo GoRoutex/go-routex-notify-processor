@@ -62,6 +62,19 @@ spring:
     mapper:
       sort-properties-alphabetically: false
 
+  mail:
+    host: ${BREVO_SMTP_HOST:smtp-relay.brevo.com}
+    port: ${BREVO_SMTP_PORT:587}
+    username: ${BREVO_SMTP_USERNAME:afbea2001@smtp-brevo.com}
+    password: ${BREVO_API_KEY}
+    properties:
+      mail:
+        smtp:
+          auth: ${BREVO_SMTP_AUTH:true}
+          starttls:
+            enable: ${BREVO_SMTP_STARTTLS_ENABLE:true}
+            required: ${BREVO_SMTP_STARTTLS_REQUIRED:true}
+
 management:
   endpoint:
     health:
@@ -86,14 +99,12 @@ identity:
 
 notification:
   email:
-    provider: sendgrid
-    sendgrid:
-      baseUrl: ${BASE_URL:http://localhost:5173/}
-      api-key: ${SENDGRID_API_KEY}
-      from-email: ${SENDGRID_FROM_EMAIL:simon@routex-go.com}
-      from-name: ${SENDGRID_FROM_NAME:Go-Routex}
-      verify-subject: ${SENDGRID_VERIFY_SUBJECT:Registration Form - Verify your Email}
-      ticket-subject: ${SENDGRID_TICKET_SUBJECT:GoRoutex - Booking Confirmation Ticket}
+    provider: brevo
+    brevo:
+      from-email: ${BREVO_FROM_EMAIL:simon@routex-go.com}
+      from-name: ${BREVO_FROM_NAME:Go-Routex}
+      verify-subject: ${BREVO_VERIFY_SUBJECT:Registration Form - Verify your Email}
+      ticket-subject: ${BREVO_TICKET_SUBJECT:GoRoutex - Booking Confirmation Ticket}
 
   thymeleaf:
     prefix: classpath:/templates/

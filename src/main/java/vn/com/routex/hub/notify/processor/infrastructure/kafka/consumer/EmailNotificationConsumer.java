@@ -1,6 +1,7 @@
 package vn.com.routex.hub.notify.processor.infrastructure.kafka.consumer;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,6 @@ import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.EmailNotifi
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.model.KafkaEventMessage;
 import vn.com.routex.hub.notify.processor.infrastructure.persistence.exception.BusinessException;
 import vn.com.routex.hub.notify.processor.infrastructure.persistence.utils.ExceptionUtils;
-import vn.com.routex.hub.notify.processor.infrastructure.persistence.utils.JsonUtils;
 
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ErrorConstant.INVALID_DATA_ERROR_MESSAGE;
 import static vn.com.routex.hub.notify.processor.infrastructure.persistence.constant.ErrorConstant.INVALID_INPUT_ERROR;
@@ -20,6 +20,7 @@ import static vn.com.routex.hub.notify.processor.infrastructure.persistence.cons
 public class EmailNotificationConsumer {
 
     private final EmailService emailService;
+    private final ObjectMapper objectMapper;
     private final SystemLog sLog = SystemLog.getLogger(this.getClass());
 
     @KafkaListener(
@@ -28,11 +29,7 @@ public class EmailNotificationConsumer {
     )
     public void handle(String payload) {
         sLog.info("[EMAIL-CONSUMER] Received email payload: {}", payload);
-        KafkaEventMessage<EmailNotificationEvent> event = JsonUtils.parseToKafkaObject(
-                payload,
-                new TypeReference<>() {
-                }
-        );
+        KafkaEventMessage<EmailNotificationEvent> event = parseEvent(payload);
 
         if (event == null || event.data() == null) {
             throw new BusinessException(ExceptionUtils.buildResultResponse(INVALID_INPUT_ERROR, INVALID_DATA_ERROR_MESSAGE));
@@ -56,6 +53,46 @@ public class EmailNotificationConsumer {
             sLog.error("[EMAIL-CONSUMER] Error processing email notification to={}", data.toEmail(), e);
             throw e;
         }
+    }
+
+    private KafkaEventMessage<EmailNotificationEvent> parseEvent(String payload) {
+        try {
+            JsonNode root = objectMapper.readTree(payload);
+            JsonNode dataNode = root.path("data");
+            if (dataNode.isMissingNode() || dataNode.isNull()) {
+                dataNode = root.path("payload").path("data");
+            }
+            if (dataNode.isMissingNode() || dataNode.isNull()) {
+                return null;
+            }
+
+            EmailNotificationEvent data = objectMapper.treeToValue(dataNode, EmailNotificationEvent.class);
+            return KafkaEventMessage.<EmailNotificationEvent>builder()
+                    .requestId(textOrNull(root.path("requestId")))
+                    .requestDateTime(textOrNull(root.path("requestDateTime")))
+                    .channel(textOrNull(root.path("channel")))
+                    .eventId(textOrNull(root.path("eventId")))
+                    .eventName(firstTextOrNull(root.path("eventName"), root.path("eventType")))
+                    .aggregateId(textOrNull(root.path("aggregateId")))
+                    .source(textOrNull(root.path("source")))
+                    .data(data)
+                    .build();
+        } catch (Exception ex) {
+            throw new BusinessException(ExceptionUtils.buildResultResponse(INVALID_INPUT_ERROR, INVALID_DATA_ERROR_MESSAGE));
+        }
+    }
+
+    private String firstTextOrNull(JsonNode first, JsonNode second) {
+        String value = textOrNull(first);
+        return value != null ? value : textOrNull(second);
+    }
+
+    private String textOrNull(JsonNode node) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return null;
+        }
+        String value = node.asText();
+        return value == null || value.isBlank() ? null : value;
     }
 
     private boolean isBlank(String value) {
