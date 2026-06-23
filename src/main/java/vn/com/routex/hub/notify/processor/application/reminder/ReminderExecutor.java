@@ -10,8 +10,8 @@ import vn.com.routex.hub.notify.processor.domain.notification.model.Notification
 import vn.com.routex.hub.notify.processor.domain.notification.model.NotificationDelivery;
 import vn.com.routex.hub.notify.processor.domain.notification.port.NotificationDeliveryRepositoryPort;
 import vn.com.routex.hub.notify.processor.domain.notification.port.NotificationRepositoryPort;
-import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.UserNotificationEvent;
 import vn.com.routex.hub.notify.processor.infrastructure.kafka.consumer.NotificationEventConsumer;
+import vn.com.routex.hub.notify.processor.infrastructure.kafka.event.UserNotificationEvent;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;

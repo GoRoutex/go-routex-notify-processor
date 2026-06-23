@@ -7,8 +7,6 @@ import lombok.experimental.UtilityClass;
 import vn.com.routex.hub.notify.processor.infrastructure.persistence.config.RequestAttributes;
 import vn.com.routex.hub.notify.processor.interfaces.models.base.BaseRequest;
 
-import java.util.List;
-
 @UtilityClass
 public class RequestEnvelopeExtractor {
 
@@ -17,14 +15,6 @@ public class RequestEnvelopeExtractor {
             if (v != null && !v.isBlank()) {
                 return v;
             }
-        }
-        return null;
-    }
-
-    private static String headerAny(HttpServletRequest request, List<String> names) {
-        for (String n : names) {
-            String v = request.getHeader(n);
-            if (v != null && !v.isBlank()) return v;
         }
         return null;
     }
@@ -41,15 +31,15 @@ public class RequestEnvelopeExtractor {
 
         // Prefer standard headers, but accept common variants. Also accept query params for convenience.
         String requestId = firstNonBlank(
-                headerAny(request, List.of(RequestAttributes.REQUEST_ID, "RT-REQUEST-ID", "X-Request-Id")),
+                request.getHeader(RequestAttributes.REQUEST_ID),
                 request.getParameter("requestId")
         );
         String requestDateTime = firstNonBlank(
-                headerAny(request, List.of(RequestAttributes.REQUEST_DATE_TIME, "RT-REQUEST-DATE-TIME", "X-Request-DateTime")),
+                request.getHeader(RequestAttributes.REQUEST_DATE_TIME),
                 request.getParameter("requestDateTime")
         );
         String channel = firstNonBlank(
-                headerAny(request, List.of(RequestAttributes.CHANNEL, "X-Channel")),
+                request.getHeader(RequestAttributes.CHANNEL),
                 request.getParameter("channel")
         );
 
