@@ -28,7 +28,7 @@ public class ApiFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if(shouldByPass(request.getRequestURI())) {
+        if("OPTIONS".equalsIgnoreCase(request.getMethod()) || shouldByPass(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
